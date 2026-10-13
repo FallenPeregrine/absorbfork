@@ -1362,6 +1362,8 @@ class PlayerSettings {
   static bool isEbookOnly(Map<String, dynamic> item) {
     // Podcasts are never eBook-only (minified podcasts lack duration/audioFiles)
     if ((item['mediaType'] as String?) == 'podcast') return false;
+    // BookOrbit Book Dock files have no tracks until they are filed.
+    if (item['bookDock'] != null) return false;
     final media = item['media'] as Map<String, dynamic>? ?? {};
     final duration = (media['duration'] as num?)?.toDouble() ?? 0;
     if (duration > 0) return false; // Has audio content
