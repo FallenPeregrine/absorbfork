@@ -3180,8 +3180,24 @@ class _BookDetailSheetContentState extends State<_BookDetailSheetContent> {
   }
 
   void _openGoodreads(String title, String author) async {
+    // A BookOrbit book matched on Goodreads carries its id, which opens the
+    // book itself the way the web app links it; anything else is searched.
+    // An ISBN opens the book too, on any server.
+    final id = ((_item?['bookOrbit'] as Map?)?['providerIds'] as Map?)?['goodreads'];
+    final rawIsbn = (((_item?['media'] as Map?)?['metadata'] as Map?)?['isbn'] ?? '')
+        .toString()
+        .replaceAll(RegExp(r'[^0-9Xx]'), '');
+    final isbn = rawIsbn.length == 10 || rawIsbn.length == 13 ? rawIsbn : null;
+    final exact = id is String && id.trim().isNotEmpty
+        ? BookOrbitMapper.providerUrl('goodreads', id.trim())
+        : isbn != null
+            ? 'https://www.goodreads.com/book/isbn/$isbn'
+            : null;
     final q = author.isNotEmpty ? '$title $author' : title;
-    final uri = Uri.https('www.goodreads.com', '/search', {'q': q});
+    final uri = exact != null
+        ? Uri.parse(exact)
+        : Uri.https('www.goodreads.com', '/search', {'q': q});
+    debugPrint('[Goodreads] ${exact != null ? 'book page' : 'search'}: $uri');
     try {
       // Open in Goodreads app if installed
       if (!await launchUrl(uri, mode: LaunchMode.externalNonBrowserApplication)) {
