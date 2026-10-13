@@ -1,0 +1,69 @@
+name: Build Absorb cover-cache test APK
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out exact Absorb release
+        uses: actions/checkout@v4
+        with:
+          repository: pounat/absorb
+          ref: 34294776abd2147d108d031dd222800f9b955400
+          path: absorb
+      - name: Apply cache changes
+        run: git -C absorb apply "$GITHUB_WORKSPACE/library-cover-cache.patch"
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.0'
+          channel: stable
+          cache: true
+      - name: Install native build tools
+        run: sdkmanager 'platforms;android-36' 'build-tools;35.0.0' 'ndk;28.2.13676358' 'cmake;3.22.1'
+      - name: Configure disposable test signing
+        working-directory: absorb
+        shell: bash
+        run: |
+          keytool -genkeypair -noprompt -keystore "$RUNNER_TEMP/absorb-test.jks" \
+            -storepass android -keypass android -alias absorb-test \
+            -keyalg RSA -keysize 2048 -validity 3650 \
+            -dname 'CN=Absorb Cache Test'
+          cat > android/key.properties <<EOF
+          storePassword=android
+          keyPassword=android
+          keyAlias=absorb-test
+          storeFile=$RUNNER_TEMP/absorb-test.jks
+          EOF
+          # Leave enough runner memory for Kotlin, Dart and native compilation.
+          sed -i 's/^org.gradle.jvmargs=.*/org.gradle.jvmargs=-Xmx3G -XX:MaxMetaspaceSize=1G/' android/gradle.properties
+          echo 'org.gradle.workers.max=2' >> android/gradle.properties
+      - name: Resolve dependencies
+        working-directory: absorb
+        run: flutter pub get
+      - name: Check cache behaviour
+        working-directory: absorb
+        run: flutter test test/library_cached_cover_test.dart
+      - name: Analyze changed source
+        working-directory: absorb
+        run: flutter analyze --no-fatal-infos --no-fatal-warnings lib/widgets/library_cached_cover.dart lib/widgets/library_grid_tiles.dart test/library_cached_cover_test.dart
+      - name: Build ARM64 APK alongside stock Absorb
+        working-directory: absorb
+        run: flutter build apk --release --flavor dev --target-platform android-arm64
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Absorb-Dev-cover-cache-arm64
+          path: absorb/build/app/outputs/flutter-apk/app-dev-release.apk
+          if-no-files-found: error

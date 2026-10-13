@@ -1,0 +1,173 @@
+diff --git a/lib/widgets/library_cached_cover.dart b/lib/widgets/library_cached_cover.dart
+new file mode 100644
+index 0000000..fa8c6e6
+--- /dev/null
++++ b/lib/widgets/library_cached_cover.dart
+@@ -0,0 +1,37 @@
++import 'package:cached_network_image/cached_network_image.dart';
++import 'package:flutter_cache_manager/flutter_cache_manager.dart';
++
++import 'stable_cached_network_image.dart';
++
++/// A shared disk cache for browsing artwork, separate from transient images.
++/// Retention is bounded by entry count and time since last use; the OS may
++/// still reclaim cache files. HTTP freshness is handled by the cache manager.
++class LibraryCoverCache {
++  static final instance = CacheManager(Config(
++    'absorbLibraryCoversV1',
++    stalePeriod: const Duration(days: 180),
++    maxNrOfCacheObjects: 2000,
++  ));
++}
++
++/// Keep the authenticated request URL intact, but reuse item covers after a
++/// token refresh. The key still includes server, size and artwork revision.
++/// Decode sizing stays with callers so a large library doesn't exhaust RAM.
++class LibraryCachedCover extends CachedNetworkImage {
++  LibraryCachedCover({
++    super.key,
++    required String imageUrl,
++    super.fit,
++    super.httpHeaders,
++    super.memCacheWidth,
++    super.placeholder,
++    super.errorWidget,
++  }) : super(
++          imageUrl: imageUrl,
++          cacheKey: stableCoverCacheKey(imageUrl),
++          cacheManager: LibraryCoverCache.instance,
++          fadeInDuration: Duration.zero,
++          fadeOutDuration: Duration.zero,
++          placeholderFadeInDuration: Duration.zero,
++        );
++}
+diff --git a/lib/widgets/library_grid_tiles.dart b/lib/widgets/library_grid_tiles.dart
+index 7f5350c..734eb17 100644
+--- a/lib/widgets/library_grid_tiles.dart
++++ b/lib/widgets/library_grid_tiles.dart
+@@ -1,6 +1,6 @@
+ import 'dart:io';
+ import 'package:flutter/material.dart';
+-import 'package:cached_network_image/cached_network_image.dart';
++import 'library_cached_cover.dart';
+ import 'package:provider/provider.dart';
+ import '../l10n/app_localizations.dart';
+ import 'cover_badges.dart';
+@@ -310,7 +310,7 @@ class _GridBookTileState extends State<GridBookTile> {
+             cacheWidth: decodeWidth,
+             errorBuilder: (_, __, ___) => placeholder);
+       }
+-      return CachedNetworkImage(imageUrl: coverUrl, fit: BoxFit.cover,
++      return LibraryCachedCover(imageUrl: coverUrl, fit: BoxFit.cover,
+           httpHeaders: headers, memCacheWidth: decodeWidth,
+           placeholder: (_, __) => placeholder,
+           errorWidget: (_, __, ___) => placeholder);
+@@ -330,11 +330,11 @@ class _GridBookTileState extends State<GridBookTile> {
+       ]);
+     }
+     return Stack(fit: StackFit.expand, children: [
+-      CachedNetworkImage(imageUrl: coverUrl, fit: BoxFit.cover,
++      LibraryCachedCover(imageUrl: coverUrl, fit: BoxFit.cover,
+           httpHeaders: headers, memCacheWidth: 32,
+           errorWidget: (_, __, ___) => const SizedBox.shrink()),
+       Container(color: Colors.black.withValues(alpha: 0.15)),
+-      CachedNetworkImage(imageUrl: coverUrl, fit: BoxFit.contain,
++      LibraryCachedCover(imageUrl: coverUrl, fit: BoxFit.contain,
+           httpHeaders: headers, memCacheWidth: decodeWidth,
+           placeholder: (_, __) => placeholder,
+           errorWidget: (_, __, ___) => placeholder),
+@@ -482,7 +482,7 @@ class _StackedCovers extends StatelessWidget {
+           cacheWidth: decodeWidth,
+           errorBuilder: (_, __, ___) => _placeholder());
+     }
+-    return CachedNetworkImage(imageUrl: url, fit: BoxFit.cover,
++    return LibraryCachedCover(imageUrl: url, fit: BoxFit.cover,
+         httpHeaders: mediaHeaders, memCacheWidth: decodeWidth,
+         placeholder: (_, __) => _placeholder(),
+         errorWidget: (_, __, ___) => _placeholder());
+@@ -900,7 +900,7 @@ class GridAuthorTile extends StatelessWidget {
+                   clipBehavior: Clip.antiAlias,
+                   child: imageUrl != null
+                       ? ClipOval(
+-                          child: CachedNetworkImage(
++                          child: LibraryCachedCover(
+                             imageUrl: imageUrl,
+                             fit: BoxFit.cover,
+                             httpHeaders: headers,
+diff --git a/pubspec.lock b/pubspec.lock
+index 76e29fc..2f188c0 100644
+--- a/pubspec.lock
++++ b/pubspec.lock
+@@ -358,7 +358,7 @@ packages:
+     source: sdk
+     version: "0.0.0"
+   flutter_cache_manager:
+-    dependency: transitive
++    dependency: "direct main"
+     description:
+       name: flutter_cache_manager
+       sha256: "400b6592f16a4409a7f2bb929a9a7e38c72cceb8ffb99ee57bbf2cb2cecf8386"
+diff --git a/pubspec.yaml b/pubspec.yaml
+index 8d572e5..cd00b06 100644
+--- a/pubspec.yaml
++++ b/pubspec.yaml
+@@ -25,6 +25,7 @@ dependencies:
+   
+   # Image caching
+   cached_network_image: ^3.3.0
++  flutter_cache_manager: ^3.4.1
+ 
+   # Audio playback
+   just_audio:
+diff --git a/test/library_cached_cover_test.dart b/test/library_cached_cover_test.dart
+new file mode 100644
+index 0000000..d96cd7a
+--- /dev/null
++++ b/test/library_cached_cover_test.dart
+@@ -0,0 +1,46 @@
++import 'package:absorb/widgets/library_cached_cover.dart';
++import 'package:flutter_test/flutter_test.dart';
++
++void main() {
++  TestWidgetsFlutterBinding.ensureInitialized();
++
++  const url = 'https://books.example/api/items/book-a/cover'
++      '?token=old&width=400&ts=123';
++
++  test('token refresh reuses the cover without changing the request', () {
++    final original = LibraryCachedCover(imageUrl: url);
++    final refreshedUrl = url.replaceFirst('token=old', 'token=new');
++    final refreshed = LibraryCachedCover(imageUrl: refreshedUrl);
++    expect(refreshed.cacheKey, original.cacheKey);
++    expect(refreshed.imageUrl, refreshedUrl);
++  });
++
++  test('different artwork, servers and resolutions do not collide', () {
++    final original = LibraryCachedCover(imageUrl: url);
++    for (final other in [
++      url.replaceFirst('book-a', 'book-b'),
++      url.replaceFirst('books.example', 'other.example'),
++      url.replaceFirst('ts=123', 'ts=124'),
++      url.replaceFirst('width=400', 'width=800'),
++    ]) {
++      expect(LibraryCachedCover(imageUrl: other).cacheKey,
++          isNot(original.cacheKey));
++    }
++  });
++
++  test('external artwork keeps query parameters that may identify the image', () {
++    const external = 'https://images.example/art?token=image-id';
++    expect(LibraryCachedCover(imageUrl: external).cacheKey, external);
++  });
++
++  test('foreground and background share disk cache but keep decode sizes', () {
++    final foreground = LibraryCachedCover(imageUrl: url, memCacheWidth: 400);
++    final background = LibraryCachedCover(imageUrl: url, memCacheWidth: 32);
++    expect(foreground.cacheKey, background.cacheKey);
++    expect(identical(foreground.cacheManager, background.cacheManager), isTrue);
++    expect(foreground.memCacheWidth, 400);
++    expect(background.memCacheWidth, 32);
++    expect(foreground.fadeInDuration, Duration.zero);
++    expect(foreground.fadeOutDuration, Duration.zero);
++  });
++}
