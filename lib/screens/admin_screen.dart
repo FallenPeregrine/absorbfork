@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/auth_provider.dart';
+import '../services/api_service.dart';
 import '../services/scoped_prefs.dart';
 import '../services/server_task_tracker.dart';
 import '../services/socket_service.dart';
@@ -181,14 +182,32 @@ class _AdminScreenState extends State<AdminScreen> with WidgetsBindingObserver {
   Future<void> _refreshIssueCounts() async {
     final api = context.read<AuthProvider>().apiService;
     if (api == null || !mounted) return;
-    for (final lib in _libraries) {
-      final id = lib['id'] as String? ?? '';
-      if (id.isEmpty) continue;
-      _libraryIssues[id] = await api.getIssueItemCount(id);
-      if (!mounted) return;
-    }
-    setState(() {});
+    await Future.wait([
+      for (final id in _libraryIds)
+        api.getIssueItemCount(id).then((count) {
+          if (mounted) setState(() => _libraryIssues[id] = count);
+        }),
+    ]);
   }
+
+  Iterable<String> get _libraryIds => _libraries
+      .map((lib) => lib['id'] as String? ?? '')
+      .where((id) => id.isNotEmpty);
+
+  // Only the library cards use these, so the page shows first and each card
+  // fills in when its numbers arrive.
+  Future<void> _loadLibraryCounts(ApiService api) => Future.wait([
+        for (final id in _libraryIds)
+          Future.wait([api.getLibraryStats(id), api.getIssueItemCount(id)])
+              .then((r) {
+            if (!mounted) return;
+            setState(() {
+              final stats = r[0] as Map<String, dynamic>?;
+              if (stats != null) _libraryStats[id] = stats;
+              _libraryIssues[id] = r[1] as int;
+            });
+          }),
+      ]);
 
   Future<void> _loadAll() async {
     final usersGeneration = _desktopUsersDirtyGeneration;
@@ -211,16 +230,6 @@ class _AdminScreenState extends State<AdminScreen> with WidgetsBindingObserver {
     _sessions = futures[4];
     _serverVersion = context.read<AuthProvider>().serverVersion;
 
-    for (final lib in _libraries) {
-      final id = lib['id'] as String? ?? '';
-      if (id.isNotEmpty) {
-        final stats = await api.getLibraryStats(id);
-        if (!mounted) return;
-        if (stats != null) _libraryStats[id] = stats;
-        _libraryIssues[id] = await api.getIssueItemCount(id);
-        if (!mounted) return;
-      }
-    }
     _rmabBaseUrl = await ScopedPrefs.getString(kRmabBaseUrlKey);
     if (!mounted) return;
     _rmabApiToken = await ScopedPrefs.getString(kRmabApiTokenKey);
@@ -239,6 +248,7 @@ class _AdminScreenState extends State<AdminScreen> with WidgetsBindingObserver {
       _loading = false;
     });
     _leaveUnavailablePodcastSection();
+    await _loadLibraryCounts(api);
   }
 
   bool get _hasRmab =>
@@ -1033,7 +1043,7 @@ class _AdminScreenState extends State<AdminScreen> with WidgetsBindingObserver {
     final mediaType = lib['mediaType'] as String? ?? 'book';
     final folders = (lib['folders'] as List?)?.length ?? 0;
     final stats = _libraryStats[id];
-    final totalItems = stats?['totalItems'] ?? 0;
+    final totalItems = stats?['totalItems'] ?? '-';
     final totalSize = stats?['totalSize'] as num?;
     final totalDur = stats?['totalDuration'] as num?;
     final isScanning = _scanningLibraries.contains(id) ||
