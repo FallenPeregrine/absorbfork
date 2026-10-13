@@ -1,4 +1,4 @@
-name: Build Absorb cover-cache test APK
+name: build-apk.yml
 
 on:
   workflow_dispatch:
