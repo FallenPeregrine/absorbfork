@@ -833,6 +833,11 @@ class PlayerSettings {
   static Future<bool> getNotificationChapterProgress() => _get('notificationChapterProgress', false);
   static Future<void> setNotificationChapterProgress(bool value) => _set('notificationChapterProgress', value, notify: true);
 
+  // Which pieces the media controls show on each line, as
+  // NowPlayingLayout JSON. Empty = the standard layout.
+  static Future<String> getNowPlayingLayout() => _get('nowPlayingLayout', '');
+  static Future<void> setNowPlayingLayout(String json) => _set('nowPlayingLayout', json, notify: true);
+
   // Android only: when true, the phone media controls show speed + bookmark in
   // the two extra slots instead of chapter skip. Android Auto shows all of them
   // either way; this just reorders which pair the phone "borrows".

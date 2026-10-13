@@ -1756,6 +1756,57 @@ class AppLocalizationsRo extends AppLocalizations {
       'On - lock screen & CarPlay show chapter progress';
 
   @override
+  String get nowPlayingText => 'Now playing text';
+
+  @override
+  String get nowPlayingTextSubtitle =>
+      'Choose what the media controls show on each line';
+
+  @override
+  String get nowPlayingTopLine => 'Top line';
+
+  @override
+  String get nowPlayingSecondLine => 'Second line';
+
+  @override
+  String get nowPlayingNotShown => 'Not shown';
+
+  @override
+  String get nowPlayingTopLineRequired =>
+      'The top line needs at least one item';
+
+  @override
+  String get nowPlayingPieceChapter => 'Chapter';
+
+  @override
+  String get nowPlayingPieceTitle => 'Book title';
+
+  @override
+  String get nowPlayingPieceNarrator => 'Narrator';
+
+  @override
+  String get nowPlayingPieceSeries => 'Series';
+
+  @override
+  String get nowPlayingPiecePercent => 'Book percentage';
+
+  @override
+  String get nowPlayingPieceChapterNumber => 'Chapter number';
+
+  @override
+  String get nowPlayingPieceTimeLeft => 'Time left';
+
+  @override
+  String nowPlayingChapterNumber(int number, int total) {
+    return 'Ch. $number/$total';
+  }
+
+  @override
+  String nowPlayingTimeLeft(String time) {
+    return '$time left';
+  }
+
+  @override
   String get speedBookmarkInControls => 'Speed & bookmark in media controls';
 
   @override

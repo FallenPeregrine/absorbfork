@@ -25,6 +25,7 @@ import '../services/update_checker_service.dart';
 import '../services/audiobookshelf_update_service.dart';
 import '../widgets/update_dialog.dart';
 import '../widgets/nav_hold_options.dart';
+import '../widgets/now_playing_text_sheet.dart';
 import '../screens/admin_screen.dart';
 import '../screens/downloads_screen.dart';
 import '../screens/bookmarks_screen.dart';
@@ -3090,6 +3091,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
                         setState(() => _notifChapterProgress = v);
                         PlayerSettings.setNotificationChapterProgress(v);
                       } : null,
+                    ),
+                    const Divider(height: 1, indent: 16, endIndent: 16),
+                    ListTile(
+                      title: Text(l.nowPlayingText),
+                      subtitle: Text(l.nowPlayingTextSubtitle,
+                        style: tt.bodySmall?.copyWith(color: cs.onSurfaceVariant)),
+                      trailing: Icon(Icons.chevron_right_rounded, color: cs.onSurfaceVariant),
+                      onTap: () => NowPlayingTextSheet.show(context),
                     ),
                     const Divider(height: 1, indent: 16, endIndent: 16),
                     // Cross-platform: drops the seek action so the scrubber in the

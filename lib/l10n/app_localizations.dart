@@ -3268,6 +3268,96 @@ abstract class AppLocalizations {
   /// **'On - lock screen & CarPlay show chapter progress'**
   String get chapterProgressOnSubtitleIos;
 
+  /// No description provided for @nowPlayingText.
+  ///
+  /// In en, this message translates to:
+  /// **'Now playing text'**
+  String get nowPlayingText;
+
+  /// No description provided for @nowPlayingTextSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose what the media controls show on each line'**
+  String get nowPlayingTextSubtitle;
+
+  /// No description provided for @nowPlayingTopLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Top line'**
+  String get nowPlayingTopLine;
+
+  /// No description provided for @nowPlayingSecondLine.
+  ///
+  /// In en, this message translates to:
+  /// **'Second line'**
+  String get nowPlayingSecondLine;
+
+  /// No description provided for @nowPlayingNotShown.
+  ///
+  /// In en, this message translates to:
+  /// **'Not shown'**
+  String get nowPlayingNotShown;
+
+  /// No description provided for @nowPlayingTopLineRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'The top line needs at least one item'**
+  String get nowPlayingTopLineRequired;
+
+  /// No description provided for @nowPlayingPieceChapter.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter'**
+  String get nowPlayingPieceChapter;
+
+  /// No description provided for @nowPlayingPieceTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Book title'**
+  String get nowPlayingPieceTitle;
+
+  /// No description provided for @nowPlayingPieceNarrator.
+  ///
+  /// In en, this message translates to:
+  /// **'Narrator'**
+  String get nowPlayingPieceNarrator;
+
+  /// No description provided for @nowPlayingPieceSeries.
+  ///
+  /// In en, this message translates to:
+  /// **'Series'**
+  String get nowPlayingPieceSeries;
+
+  /// No description provided for @nowPlayingPiecePercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Book percentage'**
+  String get nowPlayingPiecePercent;
+
+  /// No description provided for @nowPlayingPieceChapterNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Chapter number'**
+  String get nowPlayingPieceChapterNumber;
+
+  /// No description provided for @nowPlayingPieceTimeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'Time left'**
+  String get nowPlayingPieceTimeLeft;
+
+  /// No description provided for @nowPlayingChapterNumber.
+  ///
+  /// In en, this message translates to:
+  /// **'Ch. {number}/{total}'**
+  String nowPlayingChapterNumber(int number, int total);
+
+  /// No description provided for @nowPlayingTimeLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} left'**
+  String nowPlayingTimeLeft(String time);
+
   /// No description provided for @speedBookmarkInControls.
   ///
   /// In en, this message translates to:
