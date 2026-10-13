@@ -4634,6 +4634,8 @@
   "adminUploadReselectFiles": "Choose the files again before retrying.",
   "adminServerSettings": "Server settings",
   "adminServerSettingsSubtitle": "Scanner, storage and sorting",
+  "adminAuthentication": "Authentication",
+  "adminAuthenticationSubtitle": "Password and OpenID Connect sign-in",
   "adminStats": "Statistics",
   "adminStatsSubtitle": "Library and listening totals",
   "adminAllSessions": "All sessions",
@@ -4683,6 +4685,81 @@
   "srvSaved": "Settings saved",
   "srvSaveFailed": "Couldn't save settings",
   "srvPrefixesSaved": "Sorting prefixes updated",
+
+  "authSetLoadFailed": "Couldn't load authentication settings",
+  "authSetCustomMessage": "Custom message on login",
+  "authSetMessage": "Message",
+  "authSetPasswordAuth": "Password authentication",
+  "authSetOpenId": "OpenID Connect authentication",
+  "authSetGuide": "Setup guide",
+  "authSetIssuerUrl": "Issuer URL",
+  "authSetAutoPopulate": "Auto-populate",
+  "authSetAuthorizeUrl": "Authorize URL",
+  "authSetTokenUrl": "Token URL",
+  "authSetUserinfoUrl": "Userinfo URL",
+  "authSetJwksUrl": "JWKS URL",
+  "authSetLogoutUrl": "Logout URL",
+  "authSetClientId": "Client ID",
+  "authSetClientSecret": "Client secret",
+  "authSetSigningAlgorithm": "Signing algorithm",
+  "authSetRedirectUris": "Allowed mobile redirect URIs",
+  "authSetRedirectUrisInfo": "Apps can only return to these addresses after sign-in. Absorb uses absorb://oauth. An asterisk (*) as the only entry allows any address.",
+  "authSetAddRedirectUri": "Add URI",
+  "authSetAddAbsorbRedirect": "Add absorb://oauth",
+  "authSetSubfolder": "Subfolder for redirect URLs",
+  "authSetSubfolderNone": "None",
+  "authSetWebRedirectInfo": "Allow these URLs in your OAuth provider so sign-in can return to the web app:",
+  "authSetButtonText": "Button text",
+  "authSetMatchExisting": "Match existing users by",
+  "authSetMatchNone": "Do not match",
+  "authSetMatchEmail": "Email",
+  "authSetMatchUsername": "Username",
+  "authSetMatchExistingInfo": "Used to link existing users. Once linked, users are matched by their unique ID from the provider.",
+  "authSetAutoLaunch": "Auto launch",
+  "authSetAutoLaunchInfo": "Open the provider automatically from the web login page. /login?autoLaunch=0 skips it.",
+  "authSetAutoRegister": "Auto register",
+  "authSetAutoRegisterInfo": "Create new users automatically after they sign in",
+  "authSetClaimsInfo": "Leave these empty to turn off group and permission assignment. New users then get the User role.",
+  "authSetGroupClaim": "Group claim",
+  "authSetGroupClaimInfo": "Claim that lists the user's groups, usually groups. Groups named admin, user or guest set the role, and the highest one wins. If no group matches, sign-in is refused.",
+  "authSetPermsClaim": "Advanced permission claim",
+  "authSetPermsClaimInfo": "Claim with permissions for non-admin users. If the claim is missing, sign-in is refused, and a missing option counts as off. Expected format:",
+  "authSetRestartNote": "Restart the server after saving to apply OpenID Connect changes.",
+  "authSetNoChanges": "No changes to save",
+  "authSetNeedOneMethod": "Turn on at least one sign-in method",
+  "authSetFieldRequired": "{field} is required",
+  "@authSetFieldRequired": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "authSetInvalidRedirectUri": "Invalid redirect URI: {uri}",
+  "@authSetInvalidRedirectUri": {
+    "placeholders": {
+      "uri": {
+        "type": "String"
+      }
+    }
+  },
+  "authSetAsteriskAlone": "An asterisk (*) must be the only redirect URI",
+  "authSetInvalidClaim": "{field} is not a valid claim name",
+  "@authSetInvalidClaim": {
+    "placeholders": {
+      "field": {
+        "type": "String"
+      }
+    }
+  },
+  "authSetIssuerFailed": "Couldn't read the issuer: {error}",
+  "@authSetIssuerFailed": {
+    "placeholders": {
+      "error": {
+        "type": "String"
+      }
+    }
+  },
 
   "libNoneYet": "No libraries yet",
   "libReorderFailed": "Couldn't save the new order",

@@ -51,6 +51,7 @@ const navHoldAdminPages = [
   'email',
   'apikeys',
   'settings',
+  'auth',
   'logs',
   'stats',
 ];
@@ -64,6 +65,7 @@ IconData navHoldAdminIcon(String page) => switch (page) {
       'email' => Icons.email_rounded,
       'apikeys' => Icons.vpn_key_rounded,
       'settings' => Icons.tune_rounded,
+      'auth' => Icons.lock_person_rounded,
       'logs' => Icons.description_outlined,
       _ => Icons.bar_chart_rounded,
     };
@@ -77,6 +79,7 @@ String navHoldAdminPageLabel(String page, AppLocalizations l) => switch (page) {
       'email' => l.adminEmail,
       'apikeys' => l.adminApiKeys,
       'settings' => l.adminServerSettings,
+      'auth' => l.adminAuthentication,
       'logs' => l.navHoldAdminLogs,
       _ => l.adminStats,
     };

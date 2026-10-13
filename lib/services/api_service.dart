@@ -3821,6 +3821,45 @@ class ApiService {
     return null;
   }
 
+  /// GET /api/auth-settings - password and OpenID Connect settings (admin only).
+  Future<Map<String, dynamic>?> getAuthSettings() async {
+    try {
+      final r = await _authGet(Uri.parse('$_cleanBaseUrl/api/auth-settings'));
+      if (r.statusCode == 200) return jsonDecode(r.body) as Map<String, dynamic>;
+      debugPrint('[API] getAuthSettings failed: ${r.statusCode}');
+    } catch (e) { debugPrint('[API] getAuthSettings error: $e'); }
+    return null;
+  }
+
+  /// PATCH /api/auth-settings (admin only). Returns { updated, serverSettings }.
+  Future<Map<String, dynamic>?> updateAuthSettings(Map<String, dynamic> patch) async {
+    try {
+      final r = await _authPatch(Uri.parse('$_cleanBaseUrl/api/auth-settings'),
+          body: jsonEncode(patch));
+      if (r.statusCode == 200) return jsonDecode(r.body) as Map<String, dynamic>;
+      debugPrint('[API] updateAuthSettings failed: ${r.statusCode}');
+    } catch (e) { debugPrint('[API] updateAuthSettings error: $e'); }
+    return null;
+  }
+
+  /// GET /auth/openid/config?issuer= - the server fetches the issuer's
+  /// openid-configuration (admin only). On failure [error] holds the
+  /// server's message.
+  Future<({Map<String, dynamic>? config, String? error})> getOpenIdIssuerConfig(String issuer) async {
+    try {
+      final r = await _authGet(Uri.parse('$_cleanBaseUrl/auth/openid/config')
+          .replace(queryParameters: {'issuer': issuer}));
+      if (r.statusCode == 200) {
+        return (config: jsonDecode(r.body) as Map<String, dynamic>, error: null);
+      }
+      final body = r.body.trim();
+      return (config: null, error: body.isNotEmpty ? body : 'HTTP ${r.statusCode}');
+    } catch (e) {
+      debugPrint('[API] getOpenIdIssuerConfig error: $e');
+      return (config: null, error: e.toString());
+    }
+  }
+
   /// GET /api/stats/server — { books, podcasts, total } (admin only).
   Future<Map<String, dynamic>?> getServerStats() async {
     try {

@@ -29,6 +29,7 @@ import '../widgets/rmab_search_results_sheet.dart';
 import 'admin_email_screen.dart';
 import 'admin_libraries_screen.dart';
 import 'admin_server_logs_screen.dart';
+import 'admin_auth_settings_screen.dart';
 import 'admin_server_settings_screen.dart';
 import 'admin_sessions_screen.dart';
 import 'admin_stats_screen.dart';
@@ -1347,6 +1348,8 @@ class _AppShellState extends State<AppShell>
     switch (page) {
       case 'settings':
         screen = const AdminServerSettingsScreen();
+      case 'auth':
+        screen = const AdminAuthSettingsScreen();
       case 'logs':
         screen = const AdminServerLogsScreen();
       case 'stats':

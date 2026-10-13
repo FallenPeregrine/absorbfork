@@ -13599,6 +13599,18 @@ abstract class AppLocalizations {
   /// **'Scanner, storage and sorting'**
   String get adminServerSettingsSubtitle;
 
+  /// No description provided for @adminAuthentication.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication'**
+  String get adminAuthentication;
+
+  /// No description provided for @adminAuthenticationSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Password and OpenID Connect sign-in'**
+  String get adminAuthenticationSubtitle;
+
   /// No description provided for @adminStats.
   ///
   /// In en, this message translates to:
@@ -13880,6 +13892,282 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Sorting prefixes updated'**
   String get srvPrefixesSaved;
+
+  /// No description provided for @authSetLoadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t load authentication settings'**
+  String get authSetLoadFailed;
+
+  /// No description provided for @authSetCustomMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom message on login'**
+  String get authSetCustomMessage;
+
+  /// No description provided for @authSetMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Message'**
+  String get authSetMessage;
+
+  /// No description provided for @authSetPasswordAuth.
+  ///
+  /// In en, this message translates to:
+  /// **'Password authentication'**
+  String get authSetPasswordAuth;
+
+  /// No description provided for @authSetOpenId.
+  ///
+  /// In en, this message translates to:
+  /// **'OpenID Connect authentication'**
+  String get authSetOpenId;
+
+  /// No description provided for @authSetGuide.
+  ///
+  /// In en, this message translates to:
+  /// **'Setup guide'**
+  String get authSetGuide;
+
+  /// No description provided for @authSetIssuerUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Issuer URL'**
+  String get authSetIssuerUrl;
+
+  /// No description provided for @authSetAutoPopulate.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto-populate'**
+  String get authSetAutoPopulate;
+
+  /// No description provided for @authSetAuthorizeUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Authorize URL'**
+  String get authSetAuthorizeUrl;
+
+  /// No description provided for @authSetTokenUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Token URL'**
+  String get authSetTokenUrl;
+
+  /// No description provided for @authSetUserinfoUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Userinfo URL'**
+  String get authSetUserinfoUrl;
+
+  /// No description provided for @authSetJwksUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'JWKS URL'**
+  String get authSetJwksUrl;
+
+  /// No description provided for @authSetLogoutUrl.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout URL'**
+  String get authSetLogoutUrl;
+
+  /// No description provided for @authSetClientId.
+  ///
+  /// In en, this message translates to:
+  /// **'Client ID'**
+  String get authSetClientId;
+
+  /// No description provided for @authSetClientSecret.
+  ///
+  /// In en, this message translates to:
+  /// **'Client secret'**
+  String get authSetClientSecret;
+
+  /// No description provided for @authSetSigningAlgorithm.
+  ///
+  /// In en, this message translates to:
+  /// **'Signing algorithm'**
+  String get authSetSigningAlgorithm;
+
+  /// No description provided for @authSetRedirectUris.
+  ///
+  /// In en, this message translates to:
+  /// **'Allowed mobile redirect URIs'**
+  String get authSetRedirectUris;
+
+  /// No description provided for @authSetRedirectUrisInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Apps can only return to these addresses after sign-in. Absorb uses absorb://oauth. An asterisk (*) as the only entry allows any address.'**
+  String get authSetRedirectUrisInfo;
+
+  /// No description provided for @authSetAddRedirectUri.
+  ///
+  /// In en, this message translates to:
+  /// **'Add URI'**
+  String get authSetAddRedirectUri;
+
+  /// No description provided for @authSetAddAbsorbRedirect.
+  ///
+  /// In en, this message translates to:
+  /// **'Add absorb://oauth'**
+  String get authSetAddAbsorbRedirect;
+
+  /// No description provided for @authSetSubfolder.
+  ///
+  /// In en, this message translates to:
+  /// **'Subfolder for redirect URLs'**
+  String get authSetSubfolder;
+
+  /// No description provided for @authSetSubfolderNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get authSetSubfolderNone;
+
+  /// No description provided for @authSetWebRedirectInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow these URLs in your OAuth provider so sign-in can return to the web app:'**
+  String get authSetWebRedirectInfo;
+
+  /// No description provided for @authSetButtonText.
+  ///
+  /// In en, this message translates to:
+  /// **'Button text'**
+  String get authSetButtonText;
+
+  /// No description provided for @authSetMatchExisting.
+  ///
+  /// In en, this message translates to:
+  /// **'Match existing users by'**
+  String get authSetMatchExisting;
+
+  /// No description provided for @authSetMatchNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Do not match'**
+  String get authSetMatchNone;
+
+  /// No description provided for @authSetMatchEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Email'**
+  String get authSetMatchEmail;
+
+  /// No description provided for @authSetMatchUsername.
+  ///
+  /// In en, this message translates to:
+  /// **'Username'**
+  String get authSetMatchUsername;
+
+  /// No description provided for @authSetMatchExistingInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Used to link existing users. Once linked, users are matched by their unique ID from the provider.'**
+  String get authSetMatchExistingInfo;
+
+  /// No description provided for @authSetAutoLaunch.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto launch'**
+  String get authSetAutoLaunch;
+
+  /// No description provided for @authSetAutoLaunchInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the provider automatically from the web login page. /login?autoLaunch=0 skips it.'**
+  String get authSetAutoLaunchInfo;
+
+  /// No description provided for @authSetAutoRegister.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto register'**
+  String get authSetAutoRegister;
+
+  /// No description provided for @authSetAutoRegisterInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Create new users automatically after they sign in'**
+  String get authSetAutoRegisterInfo;
+
+  /// No description provided for @authSetClaimsInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Leave these empty to turn off group and permission assignment. New users then get the User role.'**
+  String get authSetClaimsInfo;
+
+  /// No description provided for @authSetGroupClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'Group claim'**
+  String get authSetGroupClaim;
+
+  /// No description provided for @authSetGroupClaimInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim that lists the user\'s groups, usually groups. Groups named admin, user or guest set the role, and the highest one wins. If no group matches, sign-in is refused.'**
+  String get authSetGroupClaimInfo;
+
+  /// No description provided for @authSetPermsClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'Advanced permission claim'**
+  String get authSetPermsClaim;
+
+  /// No description provided for @authSetPermsClaimInfo.
+  ///
+  /// In en, this message translates to:
+  /// **'Claim with permissions for non-admin users. If the claim is missing, sign-in is refused, and a missing option counts as off. Expected format:'**
+  String get authSetPermsClaimInfo;
+
+  /// No description provided for @authSetRestartNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Restart the server after saving to apply OpenID Connect changes.'**
+  String get authSetRestartNote;
+
+  /// No description provided for @authSetNoChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'No changes to save'**
+  String get authSetNoChanges;
+
+  /// No description provided for @authSetNeedOneMethod.
+  ///
+  /// In en, this message translates to:
+  /// **'Turn on at least one sign-in method'**
+  String get authSetNeedOneMethod;
+
+  /// No description provided for @authSetFieldRequired.
+  ///
+  /// In en, this message translates to:
+  /// **'{field} is required'**
+  String authSetFieldRequired(String field);
+
+  /// No description provided for @authSetInvalidRedirectUri.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid redirect URI: {uri}'**
+  String authSetInvalidRedirectUri(String uri);
+
+  /// No description provided for @authSetAsteriskAlone.
+  ///
+  /// In en, this message translates to:
+  /// **'An asterisk (*) must be the only redirect URI'**
+  String get authSetAsteriskAlone;
+
+  /// No description provided for @authSetInvalidClaim.
+  ///
+  /// In en, this message translates to:
+  /// **'{field} is not a valid claim name'**
+  String authSetInvalidClaim(String field);
+
+  /// No description provided for @authSetIssuerFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Couldn\'t read the issuer: {error}'**
+  String authSetIssuerFailed(String error);
 
   /// No description provided for @libNoneYet.
   ///

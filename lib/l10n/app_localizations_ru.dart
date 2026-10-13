@@ -7933,6 +7933,13 @@ class AppLocalizationsRu extends AppLocalizations {
   String get adminServerSettingsSubtitle => 'Scanner, storage and sorting';
 
   @override
+  String get adminAuthentication => 'Authentication';
+
+  @override
+  String get adminAuthenticationSubtitle =>
+      'Password and OpenID Connect sign-in';
+
+  @override
   String get adminStats => 'Statistics';
 
   @override
@@ -8073,6 +8080,162 @@ class AppLocalizationsRu extends AppLocalizations {
 
   @override
   String get srvPrefixesSaved => 'Sorting prefixes updated';
+
+  @override
+  String get authSetLoadFailed => 'Couldn\'t load authentication settings';
+
+  @override
+  String get authSetCustomMessage => 'Custom message on login';
+
+  @override
+  String get authSetMessage => 'Message';
+
+  @override
+  String get authSetPasswordAuth => 'Password authentication';
+
+  @override
+  String get authSetOpenId => 'OpenID Connect authentication';
+
+  @override
+  String get authSetGuide => 'Setup guide';
+
+  @override
+  String get authSetIssuerUrl => 'Issuer URL';
+
+  @override
+  String get authSetAutoPopulate => 'Auto-populate';
+
+  @override
+  String get authSetAuthorizeUrl => 'Authorize URL';
+
+  @override
+  String get authSetTokenUrl => 'Token URL';
+
+  @override
+  String get authSetUserinfoUrl => 'Userinfo URL';
+
+  @override
+  String get authSetJwksUrl => 'JWKS URL';
+
+  @override
+  String get authSetLogoutUrl => 'Logout URL';
+
+  @override
+  String get authSetClientId => 'Client ID';
+
+  @override
+  String get authSetClientSecret => 'Client secret';
+
+  @override
+  String get authSetSigningAlgorithm => 'Signing algorithm';
+
+  @override
+  String get authSetRedirectUris => 'Allowed mobile redirect URIs';
+
+  @override
+  String get authSetRedirectUrisInfo =>
+      'Apps can only return to these addresses after sign-in. Absorb uses absorb://oauth. An asterisk (*) as the only entry allows any address.';
+
+  @override
+  String get authSetAddRedirectUri => 'Add URI';
+
+  @override
+  String get authSetAddAbsorbRedirect => 'Add absorb://oauth';
+
+  @override
+  String get authSetSubfolder => 'Subfolder for redirect URLs';
+
+  @override
+  String get authSetSubfolderNone => 'None';
+
+  @override
+  String get authSetWebRedirectInfo =>
+      'Allow these URLs in your OAuth provider so sign-in can return to the web app:';
+
+  @override
+  String get authSetButtonText => 'Button text';
+
+  @override
+  String get authSetMatchExisting => 'Match existing users by';
+
+  @override
+  String get authSetMatchNone => 'Do not match';
+
+  @override
+  String get authSetMatchEmail => 'Email';
+
+  @override
+  String get authSetMatchUsername => 'Username';
+
+  @override
+  String get authSetMatchExistingInfo =>
+      'Used to link existing users. Once linked, users are matched by their unique ID from the provider.';
+
+  @override
+  String get authSetAutoLaunch => 'Auto launch';
+
+  @override
+  String get authSetAutoLaunchInfo =>
+      'Open the provider automatically from the web login page. /login?autoLaunch=0 skips it.';
+
+  @override
+  String get authSetAutoRegister => 'Auto register';
+
+  @override
+  String get authSetAutoRegisterInfo =>
+      'Create new users automatically after they sign in';
+
+  @override
+  String get authSetClaimsInfo =>
+      'Leave these empty to turn off group and permission assignment. New users then get the User role.';
+
+  @override
+  String get authSetGroupClaim => 'Group claim';
+
+  @override
+  String get authSetGroupClaimInfo =>
+      'Claim that lists the user\'s groups, usually groups. Groups named admin, user or guest set the role, and the highest one wins. If no group matches, sign-in is refused.';
+
+  @override
+  String get authSetPermsClaim => 'Advanced permission claim';
+
+  @override
+  String get authSetPermsClaimInfo =>
+      'Claim with permissions for non-admin users. If the claim is missing, sign-in is refused, and a missing option counts as off. Expected format:';
+
+  @override
+  String get authSetRestartNote =>
+      'Restart the server after saving to apply OpenID Connect changes.';
+
+  @override
+  String get authSetNoChanges => 'No changes to save';
+
+  @override
+  String get authSetNeedOneMethod => 'Turn on at least one sign-in method';
+
+  @override
+  String authSetFieldRequired(String field) {
+    return '$field is required';
+  }
+
+  @override
+  String authSetInvalidRedirectUri(String uri) {
+    return 'Invalid redirect URI: $uri';
+  }
+
+  @override
+  String get authSetAsteriskAlone =>
+      'An asterisk (*) must be the only redirect URI';
+
+  @override
+  String authSetInvalidClaim(String field) {
+    return '$field is not a valid claim name';
+  }
+
+  @override
+  String authSetIssuerFailed(String error) {
+    return 'Couldn\'t read the issuer: $error';
+  }
 
   @override
   String get libNoneYet => 'No libraries yet';

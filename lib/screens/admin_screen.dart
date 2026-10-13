@@ -20,6 +20,7 @@ import 'admin_missing_items_screen.dart';
 import 'admin_email_screen.dart';
 import 'admin_api_keys_screen.dart';
 import 'admin_libraries_screen.dart';
+import 'admin_auth_settings_screen.dart';
 import 'admin_server_settings_screen.dart';
 import 'admin_server_logs_screen.dart';
 import 'admin_stats_screen.dart';
@@ -411,6 +412,16 @@ class _AdminScreenState extends State<AdminScreen> with WidgetsBindingObserver {
                         ),
                         const SizedBox(height: 10),
                         _navButton(cs, tt,
+                          icon: Icons.lock_person_rounded,
+                          label: l.adminAuthentication,
+                          subtitle: l.adminAuthenticationSubtitle,
+                          onTap: () {
+                            Navigator.push(context, MaterialPageRoute(
+                              builder: (_) => const AdminAuthSettingsScreen()));
+                          },
+                        ),
+                        const SizedBox(height: 10),
+                        _navButton(cs, tt,
                           icon: Icons.description_outlined,
                           label: 'Server logs',
                           subtitle: l.sendLogsSubtitle,
@@ -485,6 +496,7 @@ class _AdminScreenState extends State<AdminScreen> with WidgetsBindingObserver {
       AdminSectionDestination('api-keys', Icons.vpn_key_rounded, l.adminApiKeys),
       AdminSectionDestination('libraries', Icons.library_books_rounded, l.adminLibrariesManage),
       AdminSectionDestination('server-settings', Icons.tune_rounded, l.adminServerSettings),
+      AdminSectionDestination('authentication', Icons.lock_person_rounded, l.adminAuthentication),
       const AdminSectionDestination('logs', Icons.description_outlined, 'Server logs'),
       AdminSectionDestination('stats', Icons.bar_chart_rounded, l.adminStats),
       AdminSectionDestination('sessions', Icons.history_rounded, l.adminAllSessions),
@@ -901,6 +913,8 @@ class _AdminScreenState extends State<AdminScreen> with WidgetsBindingObserver {
         return AdminLibrariesScreen(libraries: _libraries);
       case 'server-settings':
         return const AdminServerSettingsScreen();
+      case 'authentication':
+        return const AdminAuthSettingsScreen();
       case 'logs':
         return const AdminServerLogsScreen();
       case 'stats':
