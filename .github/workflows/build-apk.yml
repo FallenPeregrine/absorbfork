@@ -75,7 +75,6 @@ jobs:
           }
           EOF
           flutter test test/library_cached_cover_test.dart
-        run: flutter test test/library_cached_cover_test.dart
       - name: Analyze changed source
         working-directory: absorb
         run: flutter analyze --no-fatal-infos --no-fatal-warnings lib/widgets/library_cached_cover.dart lib/widgets/library_grid_tiles.dart test/library_cached_cover_test.dart
