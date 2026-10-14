@@ -1,28 +1,132 @@
+diff --git a/lib/widgets/library_authors_tab.dart b/lib/widgets/library_authors_tab.dart
+index d40a6f0..8424dfb 100644
+--- a/lib/widgets/library_authors_tab.dart
++++ b/lib/widgets/library_authors_tab.dart
+@@ -48,6 +48,7 @@ class LibraryAuthorsTab extends StatelessWidget {
+     Widget body;
+     if (isLoadingAuthors && authors.isEmpty) {
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+@@ -60,6 +61,7 @@ class LibraryAuthorsTab extends StatelessWidget {
+       );
+     } else if (authors.isEmpty && authorsLoaded) {
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+@@ -99,6 +101,7 @@ class LibraryAuthorsTab extends StatelessWidget {
+       }
+ 
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+diff --git a/lib/widgets/library_books_tab.dart b/lib/widgets/library_books_tab.dart
+index 1be8a7c..52d4d58 100644
+--- a/lib/widgets/library_books_tab.dart
++++ b/lib/widgets/library_books_tab.dart
+@@ -80,6 +80,7 @@ class LibraryBooksTab extends StatelessWidget {
+     Widget body;
+     if (items.isEmpty && isLoadingPage) {
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+@@ -94,6 +95,7 @@ class LibraryBooksTab extends StatelessWidget {
+       // The first page never arrived. Say so rather than "no books", which is
+       // what an empty grid otherwise claims.
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+@@ -151,6 +153,7 @@ class LibraryBooksTab extends StatelessWidget {
+         LibraryFilter.none => l.libraryNoBooks,
+       };
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+@@ -205,6 +208,7 @@ class LibraryBooksTab extends StatelessWidget {
+       }
+ 
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
 diff --git a/lib/widgets/library_cached_cover.dart b/lib/widgets/library_cached_cover.dart
 new file mode 100644
-index 0000000..fa8c6e6
+index 0000000..2fb0950
 --- /dev/null
 +++ b/lib/widgets/library_cached_cover.dart
-@@ -0,0 +1,37 @@
+@@ -0,0 +1,78 @@
 +import 'package:cached_network_image/cached_network_image.dart';
++import 'package:file/file.dart' as storage;
++import 'package:file/local.dart';
++import 'package:flutter/painting.dart';
 +import 'package:flutter_cache_manager/flutter_cache_manager.dart';
++import 'package:path_provider/path_provider.dart';
 +
 +import 'stable_cached_network_image.dart';
 +
-+/// A shared disk cache for browsing artwork, separate from transient images.
-+/// Retention is bounded by entry count and time since last use; the OS may
-+/// still reclaim cache files. HTTP freshness is handled by the cache manager.
-+class LibraryCoverCache {
-+  static final instance = CacheManager(Config(
-+    'absorbLibraryCoversV1',
-+    stalePeriod: const Duration(days: 180),
-+    maxNrOfCacheObjects: 2000,
-+  ));
++/// One original per item, regardless of the grid's display size.
++String originalLibraryCoverUrl(String url) {
++  final uri = Uri.tryParse(url);
++  if (uri == null || !uri.path.contains('/api/items/') ||
++      !uri.path.endsWith('/cover')) return url;
++  final query = Map<String, String>.from(uri.queryParameters)
++    ..remove('width')
++    ..remove('height')
++    ..remove('format')
++    ..['raw'] = '1';
++  return uri.replace(queryParameters: query).toString();
 +}
 +
-+/// Keep the authenticated request URL intact, but reuse item covers after a
-+/// token refresh. The key still includes server, size and artwork revision.
-+/// Decode sizing stays with callers so a large library doesn't exhaust RAM.
++/// App support storage survives OS temporary-cache cleanup.
++class LibraryCoverFileSystem implements FileSystem {
++  @override
++  Future<storage.File> createFile(String name) async {
++    final root = await getApplicationSupportDirectory();
++    final directory = const LocalFileSystem()
++        .directory('${root.path}/library-cover-originals-v2');
++    await directory.create(recursive: true);
++    return directory.childFile(name);
++  }
++}
++
++class LibraryCoverCache {
++  // Room for 750 books, extra artwork, and replaced cover revisions.
++  // The byte-bounded decoded cache never promises to hold 750 full bitmaps.
++  static final instance = CacheManager(Config(
++    'absorbLibraryOriginalsV2',
++    stalePeriod: const Duration(days: 3650),
++    maxNrOfCacheObjects: 3000,
++    fileSystem: LibraryCoverFileSystem(),
++  ));
++
++  static bool _memoryConfigured = false;
++  static CacheManager forBrowsing() {
++    if (!_memoryConfigured) {
++      final cache = PaintingBinding.instance.imageCache;
++      if (cache.maximumSize < 2000) cache.maximumSize = 2000;
++      if (cache.maximumSizeBytes < 256 * 1024 * 1024) {
++        cache.maximumSizeBytes = 256 * 1024 * 1024;
++      }
++      _memoryConfigured = true;
++    }
++    return instance;
++  }
++}
++
++/// Store originals on disk; decode only the pixels needed by each tile.
 +class LibraryCachedCover extends CachedNetworkImage {
 +  LibraryCachedCover({
 +    super.key,
@@ -33,9 +137,10 @@ index 0000000..fa8c6e6
 +    super.placeholder,
 +    super.errorWidget,
 +  }) : super(
-+          imageUrl: imageUrl,
-+          cacheKey: stableCoverCacheKey(imageUrl),
-+          cacheManager: LibraryCoverCache.instance,
++          imageUrl: originalLibraryCoverUrl(imageUrl),
++          cacheKey: stableCoverCacheKey(originalLibraryCoverUrl(imageUrl)),
++          cacheManager: LibraryCoverCache.forBrowsing(),
++          useOldImageOnUrlChange: true,
 +          fadeInDuration: Duration.zero,
 +          fadeOutDuration: Duration.zero,
 +          placeholderFadeInDuration: Duration.zero,
@@ -94,10 +199,47 @@ index 7f5350c..734eb17 100644
                              imageUrl: imageUrl,
                              fit: BoxFit.cover,
                              httpHeaders: headers,
+diff --git a/lib/widgets/library_series_tab.dart b/lib/widgets/library_series_tab.dart
+index 6bc1fb4..d9d75f6 100644
+--- a/lib/widgets/library_series_tab.dart
++++ b/lib/widgets/library_series_tab.dart
+@@ -38,6 +38,7 @@ class LibrarySeriesTab extends StatelessWidget {
+     Widget body;
+     if (seriesItems.isEmpty && isLoadingSeriesPage) {
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+@@ -50,6 +51,7 @@ class LibrarySeriesTab extends StatelessWidget {
+       );
+     } else if (seriesItems.isEmpty && !isLoadingSeriesPage) {
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
+@@ -73,6 +75,7 @@ class LibrarySeriesTab extends StatelessWidget {
+       );
+     } else {
+       body = CustomScrollView(
++        cacheExtent: MediaQuery.sizeOf(context).height,
+         controller: scrollController,
+         physics: const AlwaysScrollableScrollPhysics(),
+         slivers: [
 diff --git a/pubspec.lock b/pubspec.lock
-index 76e29fc..2f188c0 100644
+index 76e29fc..c561c56 100644
 --- a/pubspec.lock
 +++ b/pubspec.lock
+@@ -329,7 +329,7 @@ packages:
+     source: hosted
+     version: "2.2.0"
+   file:
+-    dependency: transitive
++    dependency: "direct main"
+     description:
+       name: file
+       sha256: a3b4f84adafef897088c160faf7dfffb7696046cb13ae90b508c2cbc95d3b8d4
 @@ -358,7 +358,7 @@ packages:
      source: sdk
      version: "0.0.0"
@@ -108,23 +250,24 @@ index 76e29fc..2f188c0 100644
        name: flutter_cache_manager
        sha256: "400b6592f16a4409a7f2bb929a9a7e38c72cceb8ffb99ee57bbf2cb2cecf8386"
 diff --git a/pubspec.yaml b/pubspec.yaml
-index 8d572e5..cd00b06 100644
+index 8d572e5..512eda9 100644
 --- a/pubspec.yaml
 +++ b/pubspec.yaml
-@@ -25,6 +25,7 @@ dependencies:
+@@ -25,6 +25,8 @@ dependencies:
    
    # Image caching
    cached_network_image: ^3.3.0
++  file: ^7.0.1
 +  flutter_cache_manager: ^3.4.1
  
    # Audio playback
    just_audio:
 diff --git a/test/library_cached_cover_test.dart b/test/library_cached_cover_test.dart
 new file mode 100644
-index 0000000..d96cd7a
+index 0000000..540bb79
 --- /dev/null
 +++ b/test/library_cached_cover_test.dart
-@@ -0,0 +1,46 @@
+@@ -0,0 +1,57 @@
 +import 'package:absorb/widgets/library_cached_cover.dart';
 +import 'package:flutter_test/flutter_test.dart';
 +
@@ -139,20 +282,31 @@ index 0000000..d96cd7a
 +    final refreshedUrl = url.replaceFirst('token=old', 'token=new');
 +    final refreshed = LibraryCachedCover(imageUrl: refreshedUrl);
 +    expect(refreshed.cacheKey, original.cacheKey);
-+    expect(refreshed.imageUrl, refreshedUrl);
++    expect(refreshed.imageUrl, originalLibraryCoverUrl(refreshedUrl));
 +  });
 +
-+  test('different artwork, servers and resolutions do not collide', () {
++  test('different artwork and servers do not collide', () {
 +    final original = LibraryCachedCover(imageUrl: url);
 +    for (final other in [
 +      url.replaceFirst('book-a', 'book-b'),
 +      url.replaceFirst('books.example', 'other.example'),
 +      url.replaceFirst('ts=123', 'ts=124'),
-+      url.replaceFirst('width=400', 'width=800'),
 +    ]) {
 +      expect(LibraryCachedCover(imageUrl: other).cacheKey,
 +          isNot(original.cacheKey));
 +    }
++  });
++
++  test('display sizes share an authenticated original', () {
++    final small = LibraryCachedCover(imageUrl: url);
++    final large = LibraryCachedCover(
++        imageUrl: url.replaceFirst('width=400', 'width=800'));
++    expect(small.cacheKey, large.cacheKey);
++    final request = Uri.parse(small.imageUrl);
++    expect(request.queryParameters['raw'], '1');
++    expect(request.queryParameters['width'], isNull);
++    expect(request.queryParameters['token'], 'old');
++    expect(request.queryParameters['ts'], '123');
 +  });
 +
 +  test('external artwork keeps query parameters that may identify the image', () {
