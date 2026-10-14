@@ -4,7 +4,7 @@ Has a ceiling of 2GB, which works well with my library of around 450 books on a 
 
 Any bugs noticed that have crept in from the changes do let me know and ill look into them. Otherwise Ill sporadically try to keep it updated in line with main releases assuming Nate doesnt build a similar feature into the main branch. 
 
-Absorb is a fantastic app, but its more of less feature complete for my use case so I dont check in on it too much, but if you find this useful though also depend on any newly released features, do give me a bump and ill make an effort!
+Absorb is a fantastic app, but its more of less feature complete for my use case so I don't check in on it too much, but if you find this useful, though also depend on any newly released features, do give me a bump and ill make an effort!
 
 
 ## Requirements
