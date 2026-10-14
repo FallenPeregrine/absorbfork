@@ -46,6 +46,7 @@ jobs:
           sed -e "/#include \"ggml-metal-impl.h\"/r $SRC/ggml-metal-impl.h" \
               -e "/#include \"ggml-metal-impl.h\"/d" < "$OUT/step.metal" > "$OUT/ggml-metal-embed.metal"
           xcrun -sdk iphoneos metal -std=ios-metal2.3 -mios-version-min=15.0 -O3 \
+            -I Classes/whisper/ggml/include -I Classes/whisper/ggml/src -I "$SRC" \
             -c "$OUT/ggml-metal-embed.metal" -o "$OUT/ggml-metal.air"
           xcrun -sdk iphoneos metallib "$OUT/ggml-metal.air" -o "$OUT/default.metallib"
           ls -l "$OUT/default.metallib"
